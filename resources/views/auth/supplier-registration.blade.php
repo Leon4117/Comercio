@@ -189,9 +189,11 @@
 
                 // Click on dropzone triggers input click
                 dropzone.addEventListener('click', (e) => {
-                    if (e.target !== input) {
-                        input.click();
+                    // Don't trigger if click came from label or input itself
+                    if (e.target === input || e.target.closest('label[for="' + inputId + '"]')) {
+                        return;
                     }
+                    input.click();
                 });
 
                 input.addEventListener('change', (e) => {

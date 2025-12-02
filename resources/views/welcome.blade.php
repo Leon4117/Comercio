@@ -381,16 +381,6 @@
                     <p class="text-purple-200 mb-4">Tu evento, tu momento especial</p>
                 </div>
 
-                <!-- Links -->
-                <div>
-                    <h3 class="font-semibold mb-4">Enlaces</h3>
-                    <ul class="space-y-2 text-purple-200">
-                        <li><a href="#" class="hover:text-white">Proveedores</a></li>
-                        <li><a href="#" class="hover:text-white">Contacto</a></li>
-                        <li><a href="#" class="hover:text-white">¿Cómo funciona?</a></li>
-                    </ul>
-                </div>
-
                 <!-- Contact -->
                 <div>
                     <h3 class="font-semibold mb-4">Contacto</h3>
