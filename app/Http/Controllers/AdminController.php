@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Supplier;
 use App\Models\User;
+use App\Models\EventService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -14,6 +15,14 @@ class AdminController extends Controller
      */
     public function dashboard()
     {
+        // Calcular ingresos totales (5% de comisión sobre servicios completados)
+        // Usar final_price si existe, sino usar quoted_price
+        $totalRevenue = EventService::where('status', 'completed')
+            ->get()
+            ->sum(function ($service) {
+                return $service->final_price ?? $service->quoted_price ?? 0;
+            }) * 0.05; // 5% de comisión
+
         // Estadísticas generales
         $stats = [
             'total_suppliers' => Supplier::count(),
@@ -21,7 +30,7 @@ class AdminController extends Controller
             'approved_suppliers' => Supplier::where('status', 'approved')->count(),
             'rejected_suppliers' => Supplier::where('status', 'rejected')->count(),
             'total_clients' => User::where('role', 'client')->count(),
-            'total_revenue' => 0, // Implementar cuando tengamos sistema de pagos
+            'total_revenue' => $totalRevenue,
         ];
 
         return view('admin.dashboard', compact('stats'));
@@ -70,7 +79,7 @@ class AdminController extends Controller
             DB::beginTransaction();
 
             $supplier->update(['status' => 'approved']);
-            
+
             // También actualizar el usuario
             $supplier->user->update(['approved' => true]);
 
