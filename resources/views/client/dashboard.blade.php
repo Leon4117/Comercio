@@ -266,10 +266,12 @@
                                                     @endif
 
                                                     <!-- Botón de chat -->
-                                                    <a href="{{ route('chat.start', $eventService->supplier->user) }}"
-                                                        class="text-indigo-600 hover:text-indigo-700 text-sm font-medium">
-                                                        💬 Chat
-                                                    </a>
+                                                    @if ($eventService->status !== 'cancelled')
+                                                        <a href="{{ route('chat.start', $eventService->supplier->user) }}"
+                                                            class="text-indigo-600 hover:text-indigo-700 text-sm font-medium">
+                                                            💬 Chat
+                                                        </a>
+                                                    @endif
                                                 </div>
                                             </div>
                                         </div>

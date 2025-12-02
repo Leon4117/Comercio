@@ -40,7 +40,7 @@
                 <div class="flex items-center justify-between">
                     <div>
                         <div class="text-2xl font-bold text-primary-400">Festivando</div>
-                        <div class="text-sm text-gray-400">Panel de Proveedores</div>
+                        <div class="text-sm text-gray-400">Panel</div>
                     </div>
                     <!-- Toggle Button (Expanded) -->
                     <button @click="sidebarOpen = !sidebarOpen"
@@ -120,6 +120,11 @@
                                     Pedidos Realizados
                                 </a>
 
+                                <a href="{{ route('supplier.support.contact') }}"
+                                    class="flex items-center px-4 py-2 text-sm text-gray-400 hover:text-white hover:bg-secondary-700 rounded-lg">
+                                    <span class="w-2 h-2 bg-purple-400 rounded-full mr-3"></span>
+                                    Soporte
+                                </a>
                             </div>
                         </div>
                     @endif
@@ -152,6 +157,11 @@
                                     class="flex items-center px-4 py-2 text-sm text-gray-400 hover:text-white hover:bg-secondary-700 rounded-lg">
                                     <span class="w-2 h-2 bg-green-400 rounded-full mr-3"></span>
                                     Completados
+                                </a>
+                                <a href="{{ route('client.support.contact') }}"
+                                    class="flex items-center px-4 py-2 text-sm text-gray-400 hover:text-white hover:bg-secondary-700 rounded-lg">
+                                    <span class="w-2 h-2 bg-purple-400 rounded-full mr-3"></span>
+                                    Soporte
                                 </a>
                             </div>
                         </div>
@@ -448,8 +458,23 @@
                         </div>
                     @endif
 
-                    <!-- Gestión General - Oculto para admin -->
-                    @if (auth()->user()->role != 'admin')
+                    <!-- Mi Perfil - Solo para clientes -->
+                    @if (auth()->user()->role === 'client')
+                        <div x-show="sidebarOpen" x-transition>
+                            <a href="{{ route('profile.edit') }}"
+                                class="flex items-center px-4 py-3 {{ request()->routeIs('profile.edit') ? 'bg-primary-600 text-white' : 'text-gray-300 hover:bg-secondary-700' }} rounded-lg">
+                                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z">
+                                    </path>
+                                </svg>
+                                Mi Perfil
+                            </a>
+                        </div>
+                    @endif
+
+                    <!-- Gestión General - Solo para proveedores -->
+                    @if (auth()->user()->role === 'supplier')
                         <div class="space-y-1" x-show="sidebarOpen" x-transition>
                             <button @click="openMenus.gestion = !openMenus.gestion"
                                 class="flex items-center justify-between w-full px-4 py-3 text-gray-300 hover:bg-secondary-700 rounded-lg">
@@ -662,14 +687,6 @@
                         <h1 class="text-2xl font-semibold text-gray-900">Hola, {{ Auth::user()->name }}</h1>
                     </div>
                     <div class="flex items-center space-x-4">
-                        <!-- Notification Icon -->
-                        <button class="p-2 text-gray-400 hover:text-gray-600">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M15 17h5l-5-5 5-5h-5m-6 10v-2a6 6 0 00-6-6H2a6 6 0 006 6v2a2 2 0 002 2h2a2 2 0 002-2z">
-                                </path>
-                            </svg>
-                        </button>
                         <!-- User Dropdown -->
                         <div class="relative" x-data="{ open: false }">
                             <button @click="open = !open"
@@ -691,9 +708,6 @@
                                 <a href="{{ route('profile.edit') }}"
                                     class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                                     Mi Perfil
-                                </a>
-                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                    Configuración
                                 </a>
                                 <hr class="my-1">
                                 <form method="POST" action="{{ route('logout') }}">

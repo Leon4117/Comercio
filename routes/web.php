@@ -74,6 +74,9 @@ Route::middleware(['auth', 'verified'])->prefix('supplier')->name('supplier.')->
 
     // Rutas de reportes
     Route::get('/reports', [App\Http\Controllers\SupplierReportController::class, 'index'])->name('reports.index');
+
+    // Rutas de soporte
+    Route::get('/support/contact', [App\Http\Controllers\SupportController::class, 'contactAdmin'])->name('support.contact');
 });
 
 // Rutas de cliente
@@ -88,6 +91,9 @@ Route::middleware(['auth', 'verified'])->prefix('client')->name('client.')->grou
     Route::patch('/event-services/{eventService}/cancel', [App\Http\Controllers\ClientController::class, 'cancelService'])->name('cancel-service');
     Route::post('/reviews', [App\Http\Controllers\ReviewController::class, 'storeClientReview'])->name('reviews.store');
     Route::get('/suppliers/{supplier}', [App\Http\Controllers\ClientController::class, 'getSupplier'])->name('suppliers.show');
+
+    // Rutas de soporte
+    Route::get('/support/contact', [App\Http\Controllers\SupportController::class, 'contactAdmin'])->name('support.contact');
 });
 
 // Rutas de administrador

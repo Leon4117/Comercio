@@ -110,7 +110,7 @@ class RegisteredUserController extends Controller
                 $documentsPath[] = [
                     'name' => $document->getClientOriginalName(),
                     'type' => $document->getClientOriginalExtension(),
-                    'path' => asset('storage/' . $path),
+                    'path' => '/storage/' . $path,
                 ];
             }
         }

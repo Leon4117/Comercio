@@ -138,10 +138,12 @@
                                         </form>
 
                                         <!-- Botón de chat -->
-                                        <a href="{{ route('chat.start', $order->event->user) }}"
-                                            class="text-indigo-600 hover:text-indigo-900">
-                                            Chat
-                                        </a>
+                                        @if ($order->status !== 'cancelled')
+                                            <a href="{{ route('chat.start', $order->event->user) }}"
+                                                class="text-indigo-600 hover:text-indigo-900">
+                                                Chat
+                                            </a>
+                                        @endif
                                     </td>
                                 </tr>
                             @endforeach

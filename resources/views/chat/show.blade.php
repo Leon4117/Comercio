@@ -17,7 +17,6 @@
                     <h1 class="text-2xl font-bold text-gray-900">
                         {{ $conversation->user_one_id === auth()->id() ? $conversation->userTwo->name : $conversation->userOne->name }}
                     </h1>
-                    <p class="text-sm text-gray-500">En línea</p>
                 </div>
             </div>
         </div>
@@ -48,13 +47,6 @@
                         <input type="text" name="content"
                             class="w-full rounded-full border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 pl-4 pr-10 py-3"
                             placeholder="Escribe un mensaje..." required autofocus>
-                        <button type="button" class="absolute right-3 top-3 text-gray-400 hover:text-gray-600">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
-                                </path>
-                            </svg>
-                        </button>
                     </div>
                     <button type="submit"
                         class="bg-indigo-600 text-white p-3 rounded-full hover:bg-indigo-700 transition shadow-md flex items-center justify-center">

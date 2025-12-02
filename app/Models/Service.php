@@ -59,11 +59,11 @@ class Service extends Model
     public function getTotalPrice($isUrgent = false)
     {
         $price = $this->base_price;
-        
+
         if ($isUrgent && $this->urgent_available && $this->urgent_price_extra) {
             $price += $this->urgent_price_extra;
         }
-        
+
         return $price;
     }
 
@@ -73,10 +73,10 @@ class Service extends Model
     public function getMainImageUrl()
     {
         if ($this->main_image) {
-            return asset('storage/' . $this->main_image);
+            return '/storage/' . $this->main_image;
         }
-        
-        return asset('images/service-placeholder.jpg');
+
+        return '/images/service-placeholder.jpg';
     }
 
     /**
@@ -87,9 +87,9 @@ class Service extends Model
         if (!$this->portfolio_images) {
             return [];
         }
-        
+
         return array_map(function ($image) {
-            return asset('storage/' . $image);
+            return '/storage/' . $image;
         }, $this->portfolio_images);
     }
 }
