@@ -62,6 +62,7 @@ class EventService extends Model
             'confirmed' => 'Confirmado',
             'delivered' => 'Entregado',
             'cancelled' => 'Cancelado',
+            'completed' => 'Completado',
         ];
 
         return $statuses[$this->status] ?? $this->status;
@@ -78,6 +79,7 @@ class EventService extends Model
             'confirmed' => 'green',
             'delivered' => 'purple',
             'cancelled' => 'red',
+            'completed' => 'green',
         ];
 
         return $colors[$this->status] ?? 'gray';

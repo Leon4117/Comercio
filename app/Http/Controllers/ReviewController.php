@@ -117,4 +117,97 @@ class ReviewController extends Controller
             $supplier->update(['rating_avg' => round($avgRating, 2)]);
         }
     }
+
+    /**
+     * Store a review from the client side (AJAX).
+     */
+    public function storeClientReview(Request $request)
+    {
+        $request->validate([
+            'supplier_id' => 'required|exists:suppliers,id',
+            'rating' => 'required|integer|min:1|max:5',
+            'comment' => 'nullable|string|max:1000',
+        ]);
+
+        $user = \Illuminate\Support\Facades\Auth::user();
+        $supplierId = $request->supplier_id;
+
+        // Verify if the user can review this supplier
+        $canReview = \App\Models\EventService::where('supplier_id', $supplierId)
+            ->whereHas('event', function($q) use ($user) {
+                $q->where('user_id', $user->id);
+            })
+            ->whereIn('status', ['delivered', 'completed'])
+            ->exists();
+
+        if (!$canReview) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No puedes dejar una reseña para este proveedor hasta que tengas un servicio entregado.'
+            ], 403);
+        }
+
+        try {
+            \Illuminate\Support\Facades\DB::beginTransaction();
+
+            $review = Review::create([
+                'supplier_id' => $supplierId,
+                'user_id' => $user->id,
+                'rating' => $request->rating,
+                'comment' => $request->comment,
+                'date_posted' => now(),
+            ]);
+
+            $this->updateSupplierRating($supplierId);
+
+            \Illuminate\Support\Facades\DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Reseña enviada exitosamente.',
+                'review' => [
+                    'id' => $review->id,
+                    'user_name' => $user->name,
+                    'rating' => $review->rating,
+                    'comment' => $review->comment,
+                    'date_posted' => $review->date_posted->format('d M, Y'),
+                    'time_ago' => $review->created_at->diffForHumans(),
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al guardar la reseña: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+    /**
+     * Display a listing of the resource for the logged-in supplier.
+     */
+    public function supplierIndex()
+    {
+        $supplier = \Illuminate\Support\Facades\Auth::user()->supplier;
+
+        if (!$supplier) {
+            abort(403, 'Acceso denegado. No eres un proveedor.');
+        }
+
+        $reviews = $supplier->reviews()->with('user')->latest()->paginate(10);
+
+        // Calculate stats
+        $ratingCounts = [
+            5 => $supplier->reviews()->where('rating', 5)->count(),
+            4 => $supplier->reviews()->where('rating', 4)->count(),
+            3 => $supplier->reviews()->where('rating', 3)->count(),
+            2 => $supplier->reviews()->where('rating', 2)->count(),
+            1 => $supplier->reviews()->where('rating', 1)->count(),
+        ];
+
+        $averageRating = $supplier->rating_avg;
+        $totalReviews = $supplier->reviews()->count();
+
+        return view('supplier.reviews.index', compact('reviews', 'ratingCounts', 'averageRating', 'totalReviews'));
+    }
 }

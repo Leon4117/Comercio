@@ -60,13 +60,20 @@ require __DIR__.'/auth.php';
 Route::middleware(['auth', 'verified'])->prefix('supplier')->name('supplier.')->group(function () {
     Route::get('/dashboard', [App\Http\Controllers\SupplierOrderController::class, 'dashboard'])->name('dashboard');
     Route::get('/completed-orders', [App\Http\Controllers\SupplierOrderController::class, 'completedOrders'])->name('completed-orders');
-    Route::patch('/orders/{order}/confirm-delivery', [App\Http\Controllers\SupplierOrderController::class, 'confirmDelivery'])->name('orders.confirm-delivery');
-    Route::patch('/orders/{order}/cancel', [App\Http\Controllers\SupplierOrderController::class, 'cancelOrder'])->name('orders.cancel');
-    Route::patch('/orders/{order}/update-quote', [App\Http\Controllers\SupplierOrderController::class, 'updateQuote'])->name('orders.update-quote');
+    Route::get('/pending-orders', [App\Http\Controllers\SupplierOrderController::class, 'pendingOrders'])->name('pending-orders');
+    Route::patch('/orders/{eventService}/confirm-delivery', [App\Http\Controllers\SupplierOrderController::class, 'confirmDelivery'])->name('orders.confirm-delivery');
+    Route::patch('/orders/{eventService}/cancel', [App\Http\Controllers\SupplierOrderController::class, 'cancelOrder'])->name('orders.cancel');
+    Route::patch('/orders/{eventService}/confirm-request', [App\Http\Controllers\SupplierOrderController::class, 'confirmRequest'])->name('orders.confirm-request');
 
     // Rutas de servicios
     Route::resource('services', App\Http\Controllers\SupplierServiceController::class);
     Route::patch('/services/{service}/toggle-active', [App\Http\Controllers\SupplierServiceController::class, 'toggleActive'])->name('services.toggle-active');
+
+    // Rutas de reseñas
+    Route::get('/reviews', [App\Http\Controllers\ReviewController::class, 'supplierIndex'])->name('reviews.index');
+
+    // Rutas de reportes
+    Route::get('/reports', [App\Http\Controllers\SupplierReportController::class, 'index'])->name('reports.index');
 });
 
 // Rutas de cliente
@@ -79,6 +86,8 @@ Route::middleware(['auth', 'verified'])->prefix('client')->name('client.')->grou
     Route::post('/request-service', [App\Http\Controllers\ClientController::class, 'requestService'])->name('request-service');
     Route::patch('/event-services/{eventService}/confirm-delivery', [App\Http\Controllers\ClientController::class, 'confirmDelivery'])->name('confirm-delivery');
     Route::patch('/event-services/{eventService}/cancel', [App\Http\Controllers\ClientController::class, 'cancelService'])->name('cancel-service');
+    Route::post('/reviews', [App\Http\Controllers\ReviewController::class, 'storeClientReview'])->name('reviews.store');
+    Route::get('/suppliers/{supplier}', [App\Http\Controllers\ClientController::class, 'getSupplier'])->name('suppliers.show');
 });
 
 // Rutas de administrador

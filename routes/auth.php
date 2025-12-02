@@ -71,4 +71,10 @@ Route::middleware('auth')->group(function () {
 
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
         ->name('logout');
+
+    // Chat Routes
+    Route::get('chat', [App\Http\Controllers\ChatController::class, 'index'])->name('chat.index');
+    Route::get('chat/{conversation}', [App\Http\Controllers\ChatController::class, 'show'])->name('chat.show');
+    Route::post('chat/{conversation}', [App\Http\Controllers\ChatController::class, 'store'])->name('chat.store');
+    Route::get('chat/start/{recipient}', [App\Http\Controllers\ChatController::class, 'start'])->name('chat.start');
 });

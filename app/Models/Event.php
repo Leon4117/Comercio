@@ -96,7 +96,7 @@ class Event extends Model
      */
     public function getDaysUntilEvent()
     {
-        return Carbon::now()->diffInDays($this->event_date, false);
+        return (int) now()->endOfDay()->diffInDays($this->event_date->startOfDay(), false);
     }
 
     /**

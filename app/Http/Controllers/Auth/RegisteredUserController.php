@@ -28,7 +28,7 @@ class RegisteredUserController extends Controller
     public function create(Request $request): View
     {
         $userType = $request->query('type', 'supplier'); // Default to supplier
-        
+
         // Validate user type
         if (!in_array($userType, ['client', 'supplier'])) {
             return redirect()->route('register.select-type');
@@ -44,13 +44,13 @@ class RegisteredUserController extends Controller
     {
         $categories = \App\Models\Category::all();
         $user = auth()->user();
-        
+
         // Si el usuario ya tiene un registro de proveedor, pre-llenar los datos
         $supplier = null;
         if ($user->role === 'supplier') {
             $supplier = \App\Models\Supplier::where('user_id', $user->id)->first();
         }
-        
+
         return view('auth.supplier-registration', compact('categories', 'supplier'));
     }
 
@@ -106,7 +106,12 @@ class RegisteredUserController extends Controller
         $documentsPath = [];
         if ($request->hasFile('documents')) {
             foreach ($request->file('documents') as $document) {
-                $documentsPath[] = $document->store('supplier-documents', 'public');
+                $path = $document->store('supplier-documents', 'public');
+                $documentsPath[] = [
+                    'name' => $document->getClientOriginalName(),
+                    'type' => $document->getClientOriginalExtension(),
+                    'path' => asset('storage/' . $path),
+                ];
             }
         }
 
@@ -117,7 +122,7 @@ class RegisteredUserController extends Controller
 
         // Verificar si ya existe un registro de proveedor
         $existingSupplier = \App\Models\Supplier::where('user_id', $user->id)->first();
-        
+
         if ($existingSupplier) {
             // Actualizar registro existente (para proveedores rechazados que vuelven a intentar)
             $updateData = [
@@ -128,7 +133,7 @@ class RegisteredUserController extends Controller
                 'status' => 'pending',
                 'rejection_reason' => null, // Limpiar el motivo de rechazo anterior
             ];
-            
+
             // Solo actualizar documentos si se subieron nuevos
             if (!empty($documentsPath)) {
                 $updateData['documents'] = $documentsPath;
@@ -136,7 +141,7 @@ class RegisteredUserController extends Controller
             if ($identificationPath) {
                 $updateData['identification_photo'] = $identificationPath;
             }
-            
+
             $existingSupplier->update($updateData);
         } else {
             // Crear nuevo registro de proveedor
