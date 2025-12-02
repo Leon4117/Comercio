@@ -397,6 +397,77 @@
             </div>
         </div>
     </footer>
+
+    <!-- Cookie Policy Modal -->
+    <div id="cookieModal"
+        class="fixed bottom-0 left-0 right-0 bg-white shadow-2xl border-t-4 border-purple-600 p-6 transform transition-transform duration-500 translate-y-full z-50">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+                <div class="flex items-start space-x-4 flex-1">
+                    <div class="flex-shrink-0">
+                        <svg class="w-8 h-8 text-purple-600" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold text-gray-900 mb-2">Política de Cookies</h3>
+                        <p class="text-sm text-gray-600">
+                            Utilizamos cookies para mejorar tu experiencia en nuestra plataforma. Al continuar
+                            navegando, aceptas nuestro uso de cookies.
+                            <a href="https://docs.google.com/document/d/1JN2_-eWfuZLLj24E-ljYYRNXwDItkxlAeJbFSEEVPFk/edit?usp=drivesdk"
+                                class="text-purple-600 hover:text-purple-700 underline font-medium">Más
+                                información</a>
+                        </p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-3 flex-shrink-0">
+                    <button onclick="declineCookies()"
+                        class="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors font-medium">
+                        Rechazar
+                    </button>
+                    <button onclick="acceptCookies()"
+                        class="px-6 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors font-medium">
+                        Aceptar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Check if user has already made a choice about cookies
+        function checkCookieConsent() {
+            const consent = localStorage.getItem('cookieConsent');
+            if (!consent) {
+                // Show modal after a short delay
+                setTimeout(() => {
+                    document.getElementById('cookieModal').classList.remove('translate-y-full');
+                }, 1000);
+            }
+        }
+
+        // Accept cookies
+        function acceptCookies() {
+            localStorage.setItem('cookieConsent', 'accepted');
+            hideCookieModal();
+        }
+
+        // Decline cookies
+        function declineCookies() {
+            localStorage.setItem('cookieConsent', 'declined');
+            hideCookieModal();
+        }
+
+        // Hide the modal
+        function hideCookieModal() {
+            document.getElementById('cookieModal').classList.add('translate-y-full');
+        }
+
+        // Run on page load
+        document.addEventListener('DOMContentLoaded', checkCookieConsent);
+    </script>
 </body>
 
 </html>
